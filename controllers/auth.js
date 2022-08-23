@@ -1,25 +1,41 @@
 const crypto = require("crypto");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
-const sendEmail = require("../utils/sendEmail");
 const User = require("../models/User");
+
+// @desc    ユーザー登録画面表示
+// @route   GET /auth/register
+// @access  Public
+exports.registerView = (req, res, next) => {
+  res.render("auth/register.ejs")
+}
 
 // @desc    ユーザー登録
 // @route   POST /auth/register
 // @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, phone } = req.body;
 
   // Create user
   const user = await User.create({
     name,
     email,
     password,
-    role
+    role,
+    phone
   });
+
+  console.log(`user: ${user}`)
 
   sendTokenResponse(user, 200, res);
 });
+
+// @desc    ユーザー登録画面表示
+// @route   GET /auth/register
+// @access  Public
+exports.loginView = (req, res, next) => {
+  res.render("auth/login.ejs");
+}
 
 // @desc    ユーザーログイン
 // @route   POST /auth/login

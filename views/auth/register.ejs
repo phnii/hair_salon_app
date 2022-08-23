@@ -1,0 +1,23 @@
+<h1>ユーザー新規登録ページ</h1>
+
+<form action="/auth/register" method="POST">
+  <div class="name">
+    <label for="last">姓</label>
+    <input type="text" name="name[last]">
+    <label for="first">名</label>
+    <input type="text" name="name[first]">
+  </div>
+  <div class="mail">
+    <label for="email">メールアドレス</label>
+    <input type="text" name="email">
+  </div>
+  <div class="password">
+    <label for="password">パスワード</label>
+    <input type="password" name="password">
+  </div>
+  <div class="phone">
+    <label for="phone">電話番号</label>
+    <input type="text" name="phone">
+  </div>
+  <input type="submit">
+</form>

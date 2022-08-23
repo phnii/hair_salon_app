@@ -2,6 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const colors = require("colors");
+const path = require("path");
+const ejs = require("ejs");
+const layouts = require("express-ejs-layouts");
 
 const connectDB = require("./config/db");
 
@@ -12,6 +15,11 @@ dotenv.config({ path: "./config/config.env" });
 connectDB();
 
 const app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use("layouts");
 
 // Body Parser
 app.use(express.json());

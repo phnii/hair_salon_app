@@ -10,6 +10,8 @@ const layouts = require("express-ejs-layouts");
 const connectDB = require("./config/db");
 const errorHandler = require("./utils/errorResponse");
 
+const getCurrentUser = require("./middleware/currentUser");
+
 // Route files
 const auth = require("./routes/auth");
 
@@ -40,6 +42,8 @@ app.use(cookieParser());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+app.use(getCurrentUser);
 
 // Mount routers
 app.use("/auth", auth);

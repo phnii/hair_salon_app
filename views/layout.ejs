@@ -16,6 +16,11 @@
       <div class="container-fluid">
         <a class="navbar-brand h1 text-light" href="#">green salon</a>
       </div>
+      <% if (currentUser) { %>
+      <div class="container-fluid">
+        <a class="navbar-brand text-light" href="/auth/me"><%= currentUser.name.last + currentUser.name.first + "様" %> </a>
+      </div>
+      <% } %>
     </nav>
   </header>
   <div class="container">

@@ -10,18 +10,17 @@ const { registerView,
 
 const router = express.Router();
 
-// const { protect } = require("../middleware/auth");
+const { protect } = require("../middleware/auth");
 
 router
   .route("/register")
   .get(registerView)
-  .post(register)
+  .post(register);
 router
   .route("/login")
   .get(loginView)
-  .post(login)
-router.post("/login", loginView);
+  .post(login);
+router.get("/me",protect, getMe);
 router.get("/logout", logout);
-router.get("/me", getMe);
 
 module.exports = router;

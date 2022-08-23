@@ -77,7 +77,7 @@ exports.login = async (req, res, next) => {
 };
 
 // @desc    ログイン中のユーザーのデータを取得する
-// @route   POST /api/v1/auth/me
+// @route   POST /auth/me
 // @access  Private
 exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id);

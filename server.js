@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const colors = require("colors");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const ejs = require("ejs");
 const layouts = require("express-ejs-layouts");
 
@@ -31,6 +32,9 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+
+// Cookie Parser
+app.use(cookieParser());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {

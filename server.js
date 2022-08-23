@@ -25,6 +25,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(layouts);
 
+
 // Body Parser
 app.use(express.json());
 app.use(express.urlencoded({

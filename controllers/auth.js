@@ -7,63 +7,74 @@ const User = require("../models/User");
 // @route   GET /auth/register
 // @access  Public
 exports.registerView = (req, res, next) => {
+  res.locals.err = "";
   res.render("auth/register.ejs")
 }
 
 // @desc    ユーザー登録
 // @route   POST /auth/register
 // @access  Public
-exports.register = asyncHandler(async (req, res, next) => {
+exports.register = async (req, res, next) => {
   const { name, email, password, role, phone } = req.body;
 
   // Create user
-  const user = await User.create({
-    name,
-    email,
-    password,
-    role,
-    phone
-  });
-
-  console.log(`user: ${user}`)
-
-  sendTokenResponse(user, 200, res);
-});
+  try {
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role,
+      phone
+    });
+    sendTokenResponse(user, 200, res);
+  } catch (err) {
+    res.locals.err = err;
+    return res.render("auth/register.ejs");
+  }
+};
 
 // @desc    ユーザー登録画面表示
 // @route   GET /auth/register
 // @access  Public
 exports.loginView = (req, res, next) => {
+  res.locals.err = "";
   res.render("auth/login.ejs");
 }
 
 // @desc    ユーザーログイン
 // @route   POST /auth/login
 // @access  Public
-exports.login = asyncHandler(async (req, res, next) => {
+exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   // Validate email & password
   if (!email || !password) {
-    return next(new ErrorResponse("メールアドレスを入力してください", 400));
+    let err = new ErrorResponse("メールアドレスを入力してください", 400);
+    res.locals.err = err;
+    return res.render("auth/login.ejs");
   }
 
   // Check for user
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return next(new ErrorResponse("メールアドレスとパスワードの組が正しくありません", 400));
+
+    let err = new ErrorResponse("メールアドレスとパスワードの組が正しくありません", 400);
+    res.locals.err = err;
+    return res.render("auth/login.ejs");
   }
 
   // Check if password matches
   const isMatch = await user.matchPassword(password);
 
   if (!isMatch) {
-    return next(new ErrorResponse("メールアドレスとパスワードの組が正しくありません", 400));
+    let err = new ErrorResponse("メールアドレスとパスワードの組が正しくありません", 400);
+    res.locals.err = err;
+    return res.render("auth/login.ejs");
   }
 
   sendTokenResponse(user, 200, res);
-});
+};
 
 // @desc    ログイン中のユーザーのデータを取得する
 // @route   POST /api/v1/auth/me

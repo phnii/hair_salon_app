@@ -38,20 +38,22 @@ window.onload = function () {
 };
 // 前の週表示
 function prev(){
-    openTime = new Date(2000, 1, 1, 10, 30, 0)
-    showDate.setDate(showDate.getDate() - 15);
-    page--
-    showProcess(showDate);
-    updateProcess(booking)
+  if (page == 0) return; // page-1以下は表示させない
+  openTime = new Date(2000, 1, 1, 10, 30, 0)
+  showDate.setDate(showDate.getDate() - 15);
+  page--
+  showProcess(showDate);
+  updateProcess(booking)
 }
 
 // 次の週表示
 function next(){
-    openTime = new Date(2000, 1, 1, 10, 30, 0)
-    showDate.setDate(showDate.getDate() + 15);
-    page++
-    showProcess(showDate);
-    updateProcess(booking)
+  if (page == 1) return; // page2以上は表示させない
+  openTime = new Date(2000, 1, 1, 10, 30, 0)
+  showDate.setDate(showDate.getDate() + 15);
+  page++
+  showProcess(showDate);
+  updateProcess(booking)
 }
 
 // カレンダー表示

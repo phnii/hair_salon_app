@@ -80,12 +80,11 @@ exports.login = async (req, res, next) => {
 // @route   POST /auth/me
 // @access  Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
-
-  res.status(200).json({
-    success: true,
-    data: user
-  });
+  const user = await User.findById(req.user.id).populate({ path: "books", populate: { path: "menu" }}).populate({ path: "books", populate: { path: "staff" }});
+  updateMyBooks(user.books);
+  res.locals.user = user;
+  res.locals.dateFormat = require("../dateFormat");
+  res.render("auth/me");
 });
 
 // @desc    ログアウトする
@@ -118,3 +117,15 @@ const sendTokenResponse = (user, statusCode, res) => {
 
   res.cookie("token", token, options).redirect("/auth/login")
 };
+
+// 予約の配列を受け取って終了時刻>現在時刻になっているもののstatusをdoneに書き換える
+const updateMyBooks = async (books) => {
+  const now = new Date();
+  for (book of books) {
+    console.log(`${book.getEndTime()}`.red)
+    if (book.getEndTime() < now) {
+      book.status = "done";
+      let updatedBook = await book.save();
+    }
+  }
+}

@@ -2,12 +2,15 @@ const User = require("../models/User");
 const Menu = require("../models/Menu");
 const Book = require("../models/Book");
 
+const dateFormat = require("../dateFormat");
+
 // @desc    予約一覧表示
 // @route   GET /books
 // @access  Private/admin
 exports.indexBooks = async (req, res, next) => {
   let books = await Book.find().populate("user").populate("staff").populate("menu");
   res.locals.books = books;
+  res.locals.dateFormat = dateFormat;
   res.render("books/index");
 };
 
@@ -91,6 +94,7 @@ exports.confirmation = async (req, res, next) => {
   res.locals.menu = menu;
   res.locals.user = req.user;
   res.locals.book = newBook;
+  res.locals.dateFormat = require("../dateFormat");
   res.render("books/confirmation");
 };
 

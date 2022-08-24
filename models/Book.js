@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+const { OPEN_TIME } = require("../settings");
+
 const BookSchema = new Schema({
   day: {
     type: Date,
@@ -31,5 +33,9 @@ const BookSchema = new Schema({
     required: [true, "ユーザーログインしてください"]
   }
 });
+
+BookSchema.methods.getStartTime = function() {
+  return new Date(OPEN_TIME * 1 + this.start * 30 * 60 * 1000);
+};
 
 module.exports = mongoose.model("Book", BookSchema);

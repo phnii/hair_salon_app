@@ -33,6 +33,8 @@ exports.selectStaff = async (req, res, next) => {
 // @access  Private/user,admin
 exports.calendar = async (req, res, next) => {
   let staffs;
+  let calSize = 30; // 今日から30日先まで予約可能
+  let dayUnits = 20; // 1日20コマ営業
   staffs = await User.findById(req.query.staff);
   if (!staffs) {
     staffs = await User.find();
@@ -47,7 +49,7 @@ exports.calendar = async (req, res, next) => {
   today.setSeconds(0);
   let bookObjects = await Book.find({ day: { $gte: today }}).populate("menu");
   let books = [];
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < calSize; i++) {
     books.push([]);
   }
   for (let i = 0; i < bookObjects.length; i++) {
@@ -59,8 +61,8 @@ exports.calendar = async (req, res, next) => {
     books[idx].push([startFrame, bookObjects[i].start + bookObjects[i].menu.unitNum - 1])
   }
   // 全ての日付でテーブルの底から(予約するコマ数 - 1)分をXで塗りつぶす
-  for (let i = 0; i < 30; i++) {
-    let el = [19 - reservingFrames + 2, 19];
+  for (let i = 0; i < calSize; i++) {
+    let el = [(dayUnits - 1) - reservingFrames + 2, (dayUnits - 1)];
     books[i].push(el);
   }
   res.locals.query = req.query;

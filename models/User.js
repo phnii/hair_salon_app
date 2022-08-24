@@ -84,4 +84,11 @@ UserSchema.methods.getResetPasswordToken = function() {
   return resetToken;
 };
 
+UserSchema.virtual("books", {
+  ref: "Book",
+  localField: "_id",
+  foreignField: "user",
+  justOne: false
+});
+
 module.exports = mongoose.model("User", UserSchema);

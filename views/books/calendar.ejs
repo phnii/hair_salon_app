@@ -19,7 +19,7 @@
 <script>
 let today = new Date()
 let showDate = today
-let frameNum = 10 // 一日10コマ
+let frameNum = 20 // 一日10コマ
 let openTime = new Date(2000, 1, 1, 10, 30, 0) // 開店時間 10:30
 let booking = []
 let page = 0
@@ -30,8 +30,6 @@ booking[1].push([3,5]) // 8/22 12-13をXにする
 booking[4].push([0, 3])
 booking[15].push([0,0], [2,3])
 booking = JSON.parse("<%= JSON.stringify(books) %>")
-console.log(booking.length)
-console.log('s')
 
 // 初期表示
 window.onload = function () {
@@ -89,12 +87,6 @@ function createProcess(days) {
     }
     calendar += "</tr>"
   }
-
-  calendar += "<th>10:00-10:30</th>"
-  for (let i = 0; i < 15; i++) {
-    calendar += "<td>O</td>"
-  }
-
   return calendar
 }
 

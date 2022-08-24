@@ -41,7 +41,7 @@ exports.calendar = async (req, res, next) => {
   let menu = await Menu.findById(req.query.menu);
 
   let today = new Date();
-  let reservingFrames = menu.unitNum; //今から予約しようとするコマ数 仮置き
+  let reservingFrames = menu.unitNum; //今から予約しようとするコマ数
   today.setHours(0);
   today.setMinutes(0);
   today.setSeconds(0);
@@ -52,11 +52,16 @@ exports.calendar = async (req, res, next) => {
   }
   for (let i = 0; i < bookObjects.length; i++) {
     // books[bookObjects[i].day.getDate() - today.getDate()].push([bookObjects[i].frame, bookObjects[i].frame + bookObjects[i].num - 1])
-    let idx = parseInt((bookObjects[i].day - today) / 86400000)
+    let idx = parseInt((bookObjects[i].day - today) / 86400000) // 予約bookObjects[i]はテーブル上で何列(何日)目に入るか(今日の場合0)
     // 予約不可のコマ区間の先頭のコマのインデックスをstartFrameと置く
     // 予約済みのコマ区間の先頭より前のコマを(予約しようとするコマ数-1)だけXで塗りつぶす
     let startFrame = bookObjects[i].start - reservingFrames + 1 >= 0 ? bookObjects[i].start - reservingFrames + 1: 0
     books[idx].push([startFrame, bookObjects[i].start + bookObjects[i].menu.unitNum - 1])
+  }
+  // 全ての日付でテーブルの底から(予約するコマ数 - 1)分をXで塗りつぶす
+  for (let i = 0; i < 30; i++) {
+    let el = [19 - reservingFrames + 2, 19];
+    books[i].push(el);
   }
   res.locals.query = req.query;
   res.locals.books = books;

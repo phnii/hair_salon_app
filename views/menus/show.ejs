@@ -1,0 +1,14 @@
+<h1>メニュー詳細表示</h1>
+
+<div class="menu border">
+  <table>
+    <tr><th>メニュー名</th><td><a href="/menus/<%= menu._id %>"><%= menu.name %></a></td></tr>
+    <tr><th>価格</th><td><%= menu.price %></td></tr>
+    <tr><th>コマ数</th><td><%= menu.unitNum %></td></tr>
+    <tr><th>施術可能スタッフ</th>
+      <% for (let j = 0; j < menu.staffs.length; j++) { %>
+        <td><%= menu.staffs[j].name.last + menu.staffs[j].name.first %></td>
+      <% } %>
+    </tr>
+  </table>
+</div>

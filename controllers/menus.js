@@ -9,6 +9,14 @@ exports.indexMenu = async (req, res, next) => {
   res.render("menus/index");
 };
 
+// @desc    メニュー詳細表示
+// @route   GET /menus/:id
+// @access  Private/admin
+exports.showMenu = async (req, res, next) => {
+  res.locals.menu = await Menu.findById(req.params.id).populate({path: "staffs"});
+  res.render("menus/show");
+};
+
 // @desc    メニュー登録画面表示
 // @route   GET /menus/new
 // @access  Private/admin

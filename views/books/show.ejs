@@ -1,0 +1,13 @@
+<h1>予約詳細ページ</h1>
+
+<div class="border">
+  <table>
+    <tr><th>お客様名</th><td><%= book.user.name.last + book.user.name.first %>様</td></tr>
+    <tr><th>日付</th><td><%= book.day.getFullYear() + "年" + (book.day.getMonth() + 1) + "月" + book.day.getDate() + "日" %></td></tr>
+    <tr><th>開始時間</th><td><%= dateFormat["hm"](book.getStartTime()) %></td></tr>
+    <tr><th>所用時間</th><td><%= book.menu.unitNum * 30 %>分</td></tr>
+    <tr><th>メニュー</th><td><%= book.menu.name %></td></tr>
+    <tr><th>担当スタッフ</th><td><%= book.staff.name.last + book.staff.name.first %></td></tr>
+    <tr><th>価格</th><td><%= book.menu.price %>円</td></tr>
+  </table>
+  </div>

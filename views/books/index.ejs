@@ -2,6 +2,7 @@
 <% for (let i = 0; i < books.length; i++) { %>
   <div class="border">
   <table>
+    <tr><th><a href="/books/<%= books[i]._id %>">予約<%= i %></a></th></tr>
     <tr><th>お客様名</th><td><%= books[i].user.name.last + books[i].user.name.first %>様</td></tr>
     <tr><th>メニュー</th><td><%= books[i].menu.name %></td></tr>
     <tr><th>日付</th><td><%= books[i].day.getFullYear() + "年" + (books[i].day.getMonth() + 1) + "月" + books[i].day.getDate() + "日" %></td></tr>

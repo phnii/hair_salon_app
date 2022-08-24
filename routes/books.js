@@ -1,5 +1,5 @@
 const express = require("express");
-const { indexBooks, selectMenu, selectStaff, calendar, confirmation, createBook } = require("../controllers/books");
+const { indexBooks, showBook, selectMenu, selectStaff, calendar, confirmation, createBook } = require("../controllers/books");
 
 
 const router = express.Router();
@@ -26,5 +26,9 @@ router
 router
   .route("/create")
   .post(protect, authorize("user", "admin"), createBook)
+
+router
+  .route("/:id")
+  .get(protect, authorize("user", "admin"), showBook);
 
 module.exports = router;

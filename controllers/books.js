@@ -14,6 +14,23 @@ exports.indexBooks = async (req, res, next) => {
   res.render("books/index");
 };
 
+// @desc    予約詳細表示
+// @route   GET /books/:id
+// @access  Private/admin, book.user
+exports.showBook = async (req, res, next) => {
+  let book = await Book.findById(req.params.id).populate("user").populate("staff").populate("menu");
+  console.log(`${book.user._id.toString() === req.user._id.toString()}`.green.bold)
+  console.log(`${req.user._id}`.blue.bold)
+  console.log(`${req.user.role}`.red.bold)
+
+  if (book.user._id.toString() !== req.user._id.toString() || req.user.role.toString() !== "admin") {
+    return res.redirect("/books/menus");
+  }
+  res.locals.book = book;
+  res.locals.dateFormat = dateFormat;
+  res.render("books/show");
+};
+
 // @desc    メニュー選択画面表示
 // @route   GET /books/menus
 // @access  Private/user,admin
@@ -44,13 +61,9 @@ exports.selectStaff = async (req, res, next) => {
 // @route   GET /books/calendar
 // @access  Private/user,admin
 exports.calendar = async (req, res, next) => {
-  let staffs;
   let calSize = 30; // 今日から30日先まで予約可能
   let dayUnits = 20; // 1日20コマ営業
-  staffs = await User.findById(req.query.staff);
-  if (!staffs) {
-    staffs = await User.find();
-  }
+  let staff = await User.findById(req.query.staff);
 
   let menu = await Menu.findById(req.query.menu);
 
@@ -59,7 +72,7 @@ exports.calendar = async (req, res, next) => {
   today.setHours(0);
   today.setMinutes(0);
   today.setSeconds(0);
-  let bookObjects = await Book.find({ day: { $gte: today }}).populate("menu");
+  let bookObjects = await Book.find({ day: { $gte: today }, staff: staff._id.toString()}).populate("menu");
   let books = [];
   for (let i = 0; i < calSize; i++) {
     books.push([]);

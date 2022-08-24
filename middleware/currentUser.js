@@ -19,7 +19,7 @@ const getCurrentUser = async (req, res, next) => {
 
   if (!token) {
     res.locals.currentUser = null;
-    next();
+    return next();
   }
 
   try {
@@ -28,10 +28,10 @@ const getCurrentUser = async (req, res, next) => {
 
     let user = await User.findById(decoded.id);
     res.locals.currentUser = user;
-    next();
+    return next();
   } catch (err) {
     res.locals.currentUser = null;
-    next();
+    return next();
   }
 }
 

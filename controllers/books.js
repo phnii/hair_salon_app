@@ -2,6 +2,15 @@ const User = require("../models/User");
 const Menu = require("../models/Menu");
 const Book = require("../models/Book");
 
+// @desc    予約一覧表示
+// @route   GET /books
+// @access  Private/admin
+exports.indexBooks = async (req, res, next) => {
+  let books = await Book.find().populate("user").populate("staff").populate("menu");
+  res.locals.books = books;
+  res.render("books/index");
+};
+
 // @desc    メニュー選択画面表示
 // @route   GET /books/menus
 // @access  Private/user,admin

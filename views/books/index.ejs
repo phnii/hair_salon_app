@@ -1,0 +1,13 @@
+<h1>予約一覧ページ</h1>
+<% for (let i = 0; i < books.length; i++) { %>
+  <div class="border">
+  <table>
+    <tr><th>お客様名</th><td><%= books[i].user.name.last + books[i].user.name.first %>様</td></tr>
+    <tr><th>メニュー</th><td><%= books[i].menu.name %></td></tr>
+    <tr><th>日付</th><td><%= books[i].day.getFullYear() + "年" + (books[i].day.getMonth() + 1) + "月" + books[i].day.getDate() + "日" %></td></tr>
+    <tr><th>開始時間</th><td><%= books[i].start %></td></tr>
+    <tr><th>所用時間</th><td><%= books[i].menu.unitNum * 30 %>分</td></tr>
+    <tr><th>担当スタッフ</th><td><%= books[i].staff.name.last + books[i].staff.name.first %></td></tr>
+  </table>
+  </div>
+<% } %>

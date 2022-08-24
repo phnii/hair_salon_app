@@ -1,12 +1,12 @@
 const express = require("express");
-const { selectMenu, selectStaff, calendar, confirmation, createBook } = require("../controllers/books");
+const { indexBooks, selectMenu, selectStaff, calendar, confirmation, createBook } = require("../controllers/books");
 
 
 const router = express.Router();
 
 const { protect, authorize } = require("../middleware/auth");
 
-// router.route("/").get(protect, authorize("admin"), indexMenu);
+router.route("/").get(protect, authorize("admin"), indexBooks);
 
 router.route("/menus").get(protect, authorize("user", "admin"), selectMenu);
 

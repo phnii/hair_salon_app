@@ -14,6 +14,7 @@ const getCurrentUser = require("./middleware/currentUser");
 
 // Route files
 const auth = require("./routes/auth");
+const menus = require("./routes/menus");
 
 // load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -47,6 +48,7 @@ app.use(getCurrentUser);
 
 // Mount routers
 app.use("/auth", auth);
+app.use("/menus", menus);
 
 // app.use(errorHandler);
 
@@ -56,3 +58,10 @@ const server = app.listen(
   PORT,
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold)
 );
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`Error: ${err.message}`.red);
+  // Close server & exit process
+  server.close(() => process.exit(1))
+})

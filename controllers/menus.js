@@ -74,3 +74,15 @@ exports.updateMenu = async (req, res, next) => {
 
   res.redirect(`/menus/${req.params.id}/edit`);
 };
+
+// @desc    メニュー削除
+// @route   POST /menus/:id
+// @access  Private/admin
+exports.deleteMenu = async (req, res, next) => {
+  try {
+    let menu = await Menu.findByIdAndDelete(req.params.id);
+    res.redirect("/menus");
+  } catch(err) {
+    res.redirect("/menus");
+  }
+};

@@ -1,0 +1,20 @@
+<h1>メニュー編集ページ</h1>
+<%= err %>
+<form action="/menus/<%= menu._id %>/edit" method="POST">
+  <label for="name">メニュー名</label>
+  <input type="text" name="name" value="<%= menu.name %>">
+  <label for="price">価格</label>
+  <input type="number" name="price" value="<%= menu.price %>">
+  <label for="unitNum">コマ数</label>
+  <input type="number" name="unitNum" value="<%= menu.unitNum %>">
+  <div class="staffs">
+    施術可能スタッフ:
+    <% for (let i = 0; i < staffs.length; i++) { %>
+      <label for="staffs"><%= staffs[i].name.last + staffs[i].name.first %></label>
+      <input type="checkbox" name="staffs" value="<%= staffs[i]._id %>">
+    <% } %>
+  </div>
+  <label for="description">説明</label>
+  <textarea name="description" cols="100" rows="5"><%= menu.description %></textarea>
+  <input type="submit">
+</form>

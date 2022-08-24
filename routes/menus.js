@@ -1,5 +1,5 @@
 const express = require("express");
-const { indexMenu, newMenu, createMenu, showMenu } = require("../controllers/menus");
+const { indexMenu, newMenu, createMenu, showMenu, editMenu, updateMenu } = require("../controllers/menus");
 
 
 const router = express.Router();
@@ -15,5 +15,10 @@ router
 
 router
   .route("/:id").get(protect, authorize("admin"), showMenu);
+
+router
+  .route("/:id/edit")
+  .get(protect, authorize("admin"), editMenu)
+  .post(protect, authorize("admin"), updateMenu);
 
 module.exports = router;

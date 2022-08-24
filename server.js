@@ -15,6 +15,7 @@ const getCurrentUser = require("./middleware/currentUser");
 // Route files
 const auth = require("./routes/auth");
 const menus = require("./routes/menus");
+const books = require("./routes/books");
 
 // load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -49,6 +50,7 @@ app.use(getCurrentUser);
 // Mount routers
 app.use("/auth", auth);
 app.use("/menus", menus);
+app.use("/books", books);
 
 // app.use(errorHandler);
 

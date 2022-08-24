@@ -6,7 +6,7 @@ const BookSchema = new Schema({
     type: Date,
     required: [true, "日付を指定してください"]
   },
-  startIndex: {
+  start: {
     type: Number,
     required: [true, "開始コマを指定してください"]
   },
@@ -24,6 +24,11 @@ const BookSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
     required: [true, "スタッフを選択してください"]
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "ユーザーログインしてください"]
   }
 });
 

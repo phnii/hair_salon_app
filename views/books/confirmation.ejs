@@ -1,0 +1,21 @@
+<h1>予約確認ページ</h1>
+
+<table>
+  <tr>ご予約内容</tr>
+  <tr><th>お客様名</th><td><%= user.name.last + user.name.first %>様</td></tr>
+  <tr><th>メニュー</th><td><%= menu.name %></td></tr>
+  <tr><th>日付</th><td><%= book.day.getFullYear() + "年" + (book.day.getMonth() + 1) + "月" + book.day.getDate() + "日" %></td></tr>
+  <tr><th>開始時間</th><td><%= book.start %></td></tr>
+  <tr><th>所用時間</th><td><%= menu.unitNum * 30 %>分</td></tr>
+  <tr><th>担当スタッフ</th><td><%= staff.name.last + staff.name.first %></td></tr>
+</table>
+
+<form action="/books/create" method="POST">
+  <input type="hidden" name="user" value="<%= user.id %>">
+  <input type="hidden" name="staff" value="<%= staff.id %>">
+  <input type="hidden" name="start" value="<%= book.start %>">
+  <input type="hidden" name="unitNum" value="<%= book.unitNum %>">
+  <input type="hidden" name="day" value="<%= book.day %>">
+  <input type="hidden" name="menu" value="<%= menu._id %>">
+  <input type="submit" value="確定する">
+</form>

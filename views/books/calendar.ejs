@@ -1,0 +1,123 @@
+<div class="wrapper">
+  <h1 id="header"></h1>
+
+  <div id="next-prev-button">
+    <button id="prev" onclick="prev()"><</button>
+    <button id="next" onclick="next()">></button>
+  </div>
+
+  <div id="calendar"></div>
+</div>
+
+<div>
+  <h3>books</h3>
+  <h3 id="booksparams"><%- [1,[2,3]] %></h3>
+
+  <%= JSON.stringify(books) %>
+</div>
+
+<script>
+let today = new Date()
+let showDate = today
+let frameNum = 10 // 一日10コマ
+let openTime = new Date(2000, 1, 1, 10, 30, 0) // 開店時間 10:30
+let booking = []
+let page = 0
+for (let i = 0; i < 30; i++) {
+  booking.push([])
+}
+booking[1].push([3,5]) // 8/22 12-13をXにする
+booking[4].push([0, 3])
+booking[15].push([0,0], [2,3])
+booking = JSON.parse("<%= JSON.stringify(books) %>")
+console.log(booking.length)
+console.log('s')
+
+// 初期表示
+window.onload = function () {
+    showProcess(today);
+    updateProcess(booking);
+};
+// 前の週表示
+function prev(){
+    openTime = new Date(2000, 1, 1, 10, 30, 0)
+    showDate.setDate(showDate.getDate() - 15);
+    page--
+    showProcess(showDate);
+    updateProcess(booking)
+}
+
+// 次の週表示
+function next(){
+    openTime = new Date(2000, 1, 1, 10, 30, 0)
+    showDate.setDate(showDate.getDate() + 15);
+    page++
+    showProcess(showDate);
+    updateProcess(booking)
+}
+
+// カレンダー表示
+function showProcess(showDate) {
+  let year = showDate.getFullYear()
+  let month = showDate.getMonth()
+  let date = showDate.getDate()
+  let days = []
+  for (let i = 0; i < 15; i++) {
+    let day = new Date(year, month, date + i)
+    days.push(day)
+  }
+  let calendar = createProcess(days)
+  document.querySelector('#calendar').innerHTML = calendar
+  updateProcess(booking)
+}
+
+// カレンダー作成
+function createProcess(days) {
+  let calendar = "<table id='table'><tr class='days_row'><th></th>";
+  let showTime = openTime
+  for (let i = 0; i < 15; i++) {
+    calendar += "<th>" + `${days[i].getMonth() + 1}` + "/" + days[i].getDate() + "</th>"
+  }
+  calendar += "</tr>"
+
+  for (let i = 0; i < frameNum; i++) {
+    calendar += "<tr>"
+    calendar += `<th>${showTime.getHours()}:${showTime.getMinutes()}</th>`
+    showTime.setMinutes(showTime.getMinutes() + 30);
+    for (let j = 0; j < 15; j++) {
+      calendar += `<td name="${days[j].getDate()} frame_${i}"><a href='/books/confirmation?day=${days[j]}&start=${i}&menu=<%=query.menu%>&staff=<%=query.staff%>'>O</a></td>`
+    }
+    calendar += "</tr>"
+  }
+
+  calendar += "<th>10:00-10:30</th>"
+  for (let i = 0; i < 15; i++) {
+    calendar += "<td>O</td>"
+  }
+
+  return calendar
+}
+
+function updateProcess(booking) {
+  let table = document.getElementById("table")
+  // table.rows[1].cells[2].innerText = "X"
+  console.log(`page: ${page}`)
+  // 予約済みのコマをXで塗り直す
+  // i日めのbooking[i][0]コマからbooking[i][1]コマをXにする
+  for (let i = 15 * page; i < 15 * (page + 1); i++) {
+    for (let j = 0; j < booking[i].length; j++) { // i日めの予約の件数だけループ
+      for (let t = booking[i][j][0]; t <= booking[i][j][1]; t++) {
+        table.rows[t + 1].cells[(i + 1) - page * 15].innerText = "X"
+      }
+    }
+  }
+
+}
+</script>
+
+<style>
+  th, td {
+    border: solid 1px;
+    text-align: center;
+  }
+</style>

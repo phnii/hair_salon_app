@@ -14,6 +14,7 @@ const getCurrentUser = require("./middleware/currentUser");
 
 // Route files
 const home = require("./routes/home");
+const admin = require("./routes/admin");
 const auth = require("./routes/auth");
 const menus = require("./routes/menus");
 const books = require("./routes/books");
@@ -50,6 +51,7 @@ app.use(getCurrentUser);
 
 // Mount routers
 app.use("/", home);
+app.use("/admin", admin);
 app.use("/auth", auth);
 app.use("/menus", menus);
 app.use("/books", books);

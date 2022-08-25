@@ -99,36 +99,6 @@ exports.logout = asyncHandler(async (req, res, next) => {
   res.redirect("/");
 });
 
-// @desc    管理者トップページ表示
-// @route   GET /auth/admin
-// @access  Private/admin
-exports.adminTop = (req, res, next) => {
-  res.render("auth/adminTop");
-};
-
-// @desc    管理者ページスタッフ一覧表示
-// @route   GET /auth/admin/staffs
-// @access  Private/admin
-exports.getStaffs = async (req, res, next) => {
-  let staffs = await User.find({ role: "staff" });
-  res.locals.staffs = staffs;
-  res.render("auth/staffs");
-};
-
-// @desc    管理者ページスタッフ詳細表示
-// @route   GET /auth/admin/staffs/:id
-// @access  Private/admin
-exports.getStaff = async (req, res, next) => {
-  let staff = await User.findById(req.params.id).populate("menus");
-  let menus = await staff.getMenus();
-  let books = await Book.find({ staff: staff._id }).populate("user").populate("staff").populate("menu");
-  res.locals.staff = staff;
-  res.locals.menus = menus;
-  res.locals.books = books;
-  res.locals.dateFormat = require("../dateFormat");
-  res.render("auth/staff");
-};
-
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token

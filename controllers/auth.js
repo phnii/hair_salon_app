@@ -18,10 +18,9 @@ exports.registerView = (req, res, next) => {
 exports.register = async (req, res, next) => {
   const { name, email, password, role, phone } = req.body;
 
-  // roleがstaffの場合、リクエストユーザーが管理者であることを確認
+  // roleがstaffにならないようにする
   if (role !== "user") {
-    if (!res.locals.currentUser || res.locals.currentUser.role !== "admin")
-      res.send("不正なアクセス");
+    res.send("不正なアクセス");
   }
   // Create user
   try {

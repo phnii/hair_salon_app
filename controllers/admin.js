@@ -69,3 +69,52 @@ exports.createStaff = async (req, res, next) => {
     res.render("admin/newStaff");
   }
 };
+
+// @desc    スタッフ編集画面表示
+// @route   GET /admin/staff/:id/edit
+// @access  Private/admin
+exports.editStaff = async (req, res, next) => {
+  let staff = await User.findById(req.params.id);
+  let menus = await Menu.find();
+  res.locals.err = "";
+  res.locals.staff = staff;
+  res.locals.menus = menus;
+  res.render("admin/editStaff");
+};
+
+// @desc    スタッフ更新
+// @route   POST /admin/staff/:id/edit
+// @access  Private/admin
+exports.updateStaff = async (req, res, next) => {
+  try {
+    let staff = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    let initialMenus = await staff.getMenus();
+    let menuIds = req.body.menus || [];
+    console.log(`${menuIds}`.yellow.bold)
+    // 新しく選択されたメニューを探す
+    for (menuId of menuIds) {
+      if (!initialMenus.includes(menuId)) {}
+      let menu = await Menu.findById(menuId);
+      menu.staffs.push(staff._id);
+      menu.save();
+    }
+    // 今まで担当していたメニューで今回外されたものを探す
+    for (menuId of initialMenus) {
+      if (menuIds.includes(menuId)) continue;
+      let menu = await Menu.findById(menuId);
+      let index = menu.staffs.indexOf(menuId);
+      menu.staffs.splice(index, 1);
+      menu.save()
+    }
+    res.redirect(`/admin/staffs/${staff._id}`)
+  } catch (err) {
+    next(err)
+    res.locals.err = err;
+    res.locals.staff = await User.findById(req.params.id);
+    res.locals.menus = await Menu.find();
+    res.render("admin/editStaff");
+  }
+};

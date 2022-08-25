@@ -3,7 +3,7 @@ const Menu = require("../models/Menu");
 
 // @desc    メニュー一覧表示
 // @route   GET /menus
-// @access  Private/admin
+// @access  Public
 exports.indexMenu = async (req, res, next) => {
   res.locals.menus = await Menu.find().populate({path: "staffs"});
   res.render("menus/index");
@@ -11,7 +11,7 @@ exports.indexMenu = async (req, res, next) => {
 
 // @desc    メニュー詳細表示
 // @route   GET /menus/:id
-// @access  Private/admin
+// @access  Public
 exports.showMenu = async (req, res, next) => {
   res.locals.menu = await Menu.findById(req.params.id).populate({path: "staffs"});
   res.render("menus/show");

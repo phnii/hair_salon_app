@@ -6,7 +6,7 @@ const router = express.Router();
 
 const { protect, authorize } = require("../middleware/auth");
 
-router.route("/").get(protect, authorize("admin"), indexMenu);
+router.route("/").get(indexMenu);
 
 router
   .route("/new")
@@ -15,7 +15,7 @@ router
 
 router
   .route("/:id")
-  .get(protect, authorize("admin"), showMenu)
+  .get(showMenu)
   .post(protect, authorize("admin"), deleteMenu);
 
 router

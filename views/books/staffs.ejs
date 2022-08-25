@@ -1,5 +1,9 @@
 <h1>スタッフ選択画面</h1>
 
+ご希望のスタッフを選択してください
+<br>
+<ul>
 <% for (let i = 0; i < staffs.length; i++) { %>
-  名前:<a href="/books/calendar?menu=<%= menuId %>&staff=<%= staffs[i]._id %>"><%= staffs[i].name.last + staffs[i].name.first %></a>
+  <li><a href="/books/calendar?menu=<%= menuId %>&staff=<%= staffs[i]._id %>"><%= staffs[i].name.last + staffs[i].name.first %></a></li>
 <% } %>
+</ul>

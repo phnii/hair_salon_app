@@ -21,6 +21,9 @@
       </div>
       <% if (currentUser) { %>
         <div class="container-fluid">
+          <a class="navbar-brand h1 text-light" href="/books/menus">ご予約</a>
+        </div>
+        <div class="container-fluid">
           <a class="navbar-brand text-light" href="/auth/me">ログイン中:<%= currentUser.name.last + currentUser.name.first + "様" %> </a>
         </div>
         <div class="container-fluid">

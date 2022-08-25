@@ -9,9 +9,13 @@
   <input type="number" name="unitNum" value="<%= menu.unitNum %>">
   <div class="staffs">
     施術可能スタッフ:
-    <% for (let i = 0; i < staffs.length; i++) { %>
-      <label for="staffs"><%= staffs[i].name.last + staffs[i].name.first %></label>
-      <input type="checkbox" name="staffs" value="<%= staffs[i]._id %>">
+    <% for (staff of staffs) { %>
+      <label for="staffs"><%= staff.name.last + staff.name.first %></label>
+      <% if (menu.staffs.includes(staff._id)) { %>
+        <input type="checkbox" name="staffs[]" value="<%= staff._id %>" checked>
+      <% } else { %>
+        <input type="checkbox" name="staffs[]" value="<%= staff._id %>">
+      <% } %>
     <% } %>
   </div>
   <label for="description">説明</label>

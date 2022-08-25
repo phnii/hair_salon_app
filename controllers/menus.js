@@ -46,11 +46,11 @@ exports.createMenu = async (req, res, next) => {
 exports.editMenu = async (req, res, next) => {
   res.locals.err = null;
   res.locals.staffs = await User.find({ role: "staff" });
-  res.locals.menu = await Menu.findById(req.params.id).populate({path: "staffs"});
+  res.locals.menu = await Menu.findById(req.params.id);
   res.render("menus/edit");
 };
 
-// @desc    メニュー編集画面表示
+// @desc    メニュー更新
 // @route   PUT /menus/:id/edit
 // @access  Private/admin
 exports.updateMenu = async (req, res, next) => {
@@ -59,6 +59,9 @@ exports.updateMenu = async (req, res, next) => {
   if (!menu) {
     res.redirect(`/menus/${req.params.id}/edit`);
   }
+
+  // スタッフ選択のチェックボックスがすべて空で送られてきてもstaffsプロパティは空の配列を指定する
+  if (!req.body.staffs) req.body.staffs = [];
 
   try {
     menu = await Menu.findByIdAndUpdate(req.params.id, req.body, {

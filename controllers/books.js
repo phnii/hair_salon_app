@@ -118,13 +118,9 @@ exports.confirmation = async (req, res, next) => {
 // @route   GET /books/create
 // @access  Private/user,admin
 exports.createBook = async (req, res, next) => {
-  try {
-    let book = await Book.create(req.body);
-    console.log(book)
-  } catch (err) {
-    next(err)
-  }
-  res.redirect("/books/menus");
+  let book = await Book.create(req.body);
+  console.log(book)
+  res.redirect(`/books/${book._id}`);
 };
 
 // @desc    予約キャンセル

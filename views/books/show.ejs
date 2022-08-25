@@ -1,3 +1,4 @@
+<% let sel = {new: "未実施", done: "終了"}; %>
 <h1>予約詳細ページ</h1>
 
 <div class="border">
@@ -9,5 +10,7 @@
     <tr><th>メニュー</th><td><%= book.menu.name %></td></tr>
     <tr><th>担当スタッフ</th><td><%= book.staff.name.last + book.staff.name.first %></td></tr>
     <tr><th>価格</th><td><%= book.menu.price %>円</td></tr>
+    <tr><th>状態</th><td><%= sel[book.status] %></td></tr>
   </table>
+  <a href="/books/delete/<%= book._id %>"><button>予約をキャンセルする</button></a>
   </div>

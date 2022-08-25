@@ -51,12 +51,13 @@ exports.selectMenu = async (req, res, next) => {
 // @route   GET /books/staffs
 // @access  Private/user,admin
 exports.selectStaff = async (req, res, next) => {
-  let staffs = await User.find({ role: "staff" });
-  if (!staffs) {
-    res.send("スタッフが在籍していません");
+  let menu = await Menu.findById(req.query.menu).populate("staffs");
+  if (!menu) {
+    res.send("無効なメニュー");
   }
+  
   res.locals.menuId = req.query.menu;
-  res.locals.staffs = staffs;
+  res.locals.staffs = menu.staffs;
   res.render("books/staffs");
 };
 

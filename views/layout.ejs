@@ -31,7 +31,15 @@
         </div>
       <% } else { %>
         <div class="container-fluid">
+          <a class="navbar-brand text-light" href="/auth/register">新規登録</a>
+        </div>
+        <div class="container-fluid">
           <a class="navbar-brand text-light" href="/auth/login">ログイン</a>
+        </div>
+      <% } %>
+      <% if (currentUser && currentUser.role === "admin") { %>
+        <div class="container-fluid">
+          <a class="navbar-brand text-light" href="/auth/admin">管理者ページ</a>
         </div>
       <% } %>
     </nav>

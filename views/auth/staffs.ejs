@@ -1,0 +1,6 @@
+<h1>スタッフ一覧表示(管理者用)</h1>
+<ul>
+  <% for (staff of staffs) { %>
+    <li><a href="/auth/admin/staffs/<%= staff._id %>"><%= staff.name.last + staff.name.first %></a></li>
+  <% } %>
+</ul>

@@ -39,7 +39,7 @@ exports.register = async (req, res, next) => {
 exports.loginView = (req, res, next) => {
   res.locals.err = "";
   res.render("auth/login.ejs");
-}
+};
 
 // @desc    ユーザーログイン
 // @route   POST /auth/login
@@ -98,6 +98,31 @@ exports.logout = asyncHandler(async (req, res, next) => {
   res.redirect("/");
 });
 
+// @desc    管理者トップページ表示
+// @route   GET /auth/admin
+// @access  Private/admin
+exports.adminTop = (req, res, next) => {
+  res.render("auth/adminTop");
+};
+
+// @desc    管理者ページスタッフ一覧表示
+// @route   GET /auth/admin/staffs
+// @access  Private/admin
+exports.getStaffs = async (req, res, next) => {
+  let staffs = await User.find({ role: "staff" });
+  res.locals.staffs = staffs;
+  res.render("auth/staffs");
+};
+
+// @desc    管理者ページスタッフ詳細表示
+// @route   GET /auth/admin/staffs/:id
+// @access  Private/admin
+exports.getStaff = async (req, res, next) => {
+  let staff = await User.findById(req.params.id).populate("menus");
+  res.locals.staff = staff;
+  res.render("auth/staff");
+};
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token
@@ -112,7 +137,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     options.secure = true;
   }
 
-  res.cookie("token", token, options).redirect("/auth/login")
+  res.cookie("token", token, options).redirect("/")
 };
 
 // 予約の配列を受け取って終了時刻>現在時刻になっているもののstatusをdoneに書き換える
@@ -125,4 +150,4 @@ const updateMyBooks = async (books) => {
       let updatedBook = await book.save();
     }
   }
-}
+};

@@ -1,0 +1,16 @@
+<h1>スタッフ詳細ページ(管理者用)</h1>
+
+<%= staff.name.last + staff.name.first %>の詳細
+<table>
+  <tr><th>姓</th><td><%= staff.name.last %></td></tr>
+  <tr><th>名</th><td><%= staff.name.first %></td></tr>
+</table>
+
+<div class="menus">
+  <h4>対応メニュー一覧</h4>
+  <%= staff.menus %>
+</div>
+
+
+
+<a href="/auth/admin/staffs/:id/edit"><button>編集ページへ</button></a>

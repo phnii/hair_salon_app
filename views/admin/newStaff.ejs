@@ -1,0 +1,37 @@
+<h1>スタッフ登録ページ</h1>
+<%= err.message %>
+<form action="/admin/staffs/new" method="POST">
+  <div class="name">
+    <label for="last">姓</label>
+    <input type="text" name="name[last]">
+    <label for="first">名</label>
+    <input type="text" name="name[first]">
+  </div>
+  <div class="mail">
+    <label for="email">メールアドレス</label>
+    <input type="text" name="email">
+  </div>
+  <div class="password">
+    <label for="password">パスワード</label>
+    <input type="password" name="password">
+  </div>
+  <div class="phone">
+    <label for="phone">電話番号</label>
+    <input type="text" name="phone">
+  </div>
+  <input type="hidden" name="role" value="staff">
+  <br>
+  対応可能メニュー：
+  <div class="menus">
+    <% for (menu of menus) { %>
+      <input type="checkbox" name="menus[]" value="<%= menu._id %>">
+      <table class="border">
+        <tr><th>メニュー名</th><td><%= menu.name %></td></tr>
+        <tr><th>価格</th><td><%= menu.price %></td></tr>
+        <tr><th>コマ数</th><td><%= menu.unitNum %></td></tr>
+      </table>
+    <% } %>
+  </div>
+
+  <input type="submit" value="登録">
+</form>

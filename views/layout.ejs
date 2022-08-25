@@ -14,12 +14,22 @@
   <header>
     <nav class="navbar navbar-expand navbar-light bg-success">
       <div class="container-fluid">
-        <a class="navbar-brand h1 text-light" href="#">green salon</a>
+        <a class="navbar-brand h1 text-light" href="/">green salon</a>
+      </div>
+      <div class="container-fluid">
+        <a class="navbar-brand h1 text-light" href="/menus">メニュー</a>
       </div>
       <% if (currentUser) { %>
-      <div class="container-fluid">
-        <a class="navbar-brand text-light" href="/auth/me"><%= currentUser.name.last + currentUser.name.first + "様" %> </a>
-      </div>
+        <div class="container-fluid">
+          <a class="navbar-brand text-light" href="/auth/me">ログイン中:<%= currentUser.name.last + currentUser.name.first + "様" %> </a>
+        </div>
+        <div class="container-fluid">
+          <a class="navbar-brand text-light" href="/auth/logout">ログアウト %> </a>
+        </div>
+      <% } else { %>
+        <div class="container-fluid">
+          <a class="navbar-brand text-light" href="/auth/login">ログイン</a>
+        </div>
       <% } %>
     </nav>
   </header>

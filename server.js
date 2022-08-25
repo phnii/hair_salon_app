@@ -13,6 +13,7 @@ const errorHandler = require("./utils/errorResponse");
 const getCurrentUser = require("./middleware/currentUser");
 
 // Route files
+const home = require("./routes/home");
 const auth = require("./routes/auth");
 const menus = require("./routes/menus");
 const books = require("./routes/books");
@@ -48,6 +49,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(getCurrentUser);
 
 // Mount routers
+app.use("/", home);
 app.use("/auth", auth);
 app.use("/menus", menus);
 app.use("/books", books);

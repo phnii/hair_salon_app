@@ -37,6 +37,7 @@ const BookSchema = new Schema({
 // 施術開始時刻を返す
 BookSchema.methods.getStartTime = function() {
   let result = new Date(OPEN_TIME * 1 + this.start * 30 * 60 * 1000);
+  // OPEN_TIMEは時間しか正しくないため年月日を書き換える
   result.setFullYear(this.day.getFullYear());
   result.setMonth(this.day.getMonth());
   result.setDate(this.day.getDate());
@@ -46,6 +47,6 @@ BookSchema.methods.getStartTime = function() {
 // 施術終了時刻を返す
 BookSchema.methods.getEndTime = function() {
   return new Date(this.getStartTime() * 1 + this.menu.unitNum * 30 * 60 * 1000);
-}
+};
 
 module.exports = mongoose.model("Book", BookSchema);

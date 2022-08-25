@@ -19,6 +19,9 @@ exports.indexBooks = async (req, res, next) => {
 // @access  Private/admin, book.user
 exports.showBook = async (req, res, next) => {
   let book = await Book.findById(req.params.id).populate("user").populate("staff").populate("menu");
+  if (!book) {
+    return res.send("その予約はありません");
+  }
   console.log(`${book.user._id.toString() === req.user._id.toString()}`.green.bold)
   console.log(`${req.user._id}`.blue.bold)
   console.log(`${req.user.role}`.red.bold)
@@ -122,4 +125,34 @@ exports.createBook = async (req, res, next) => {
     next(err)
   }
   res.redirect("/books/menus");
+};
+
+// @desc    予約キャンセル
+// @route   GET /books/delete/:
+// @access  Private/book.user ,admin
+exports.deleteBook = async (req, res, next) => {
+  let now = new Date();
+  let today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  let book = await Book.findById(req.params.id);
+  if (!book) {
+    return res.send("予約がありません");
+  }
+  let bookDay = new Date(book.day.getFullYear(), book.day.getMonth(), book.day.getDate());
+
+  // book.userかadmin以外はキャンセルできない
+  if (book.user._id.toString() !== req.user._id.toString()
+    || req.user.role.toString() !== "admin") {
+    return res.send("不正なアクセス");
+  }
+  console.log(`today:${today}`.blue)
+  console.log(`book.day:${book.day}`.red)
+  console.log(`${bookDay - today}`.green)
+  // 当日以降のキャンセルはできない
+  if (bookDay - today <= 0) {
+    return res.send("当日以降のキャンセルはできません");
+  }
+
+  book = await Book.findByIdAndRemove(req.params.id);
+  res.redirect("/auth/me");
 };

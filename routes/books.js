@@ -1,5 +1,13 @@
 const express = require("express");
-const { indexBooks, showBook, selectMenu, selectStaff, calendar, confirmation, createBook } = require("../controllers/books");
+const { indexBooks,
+        showBook,
+        selectMenu,
+        selectStaff,
+        calendar,
+        confirmation,
+        createBook,
+        deleteBook
+       } = require("../controllers/books");
 
 
 const router = express.Router();
@@ -26,6 +34,10 @@ router
 router
   .route("/create")
   .post(protect, authorize("user", "admin"), createBook)
+
+router
+  .route("/delete/:id")
+  .get(protect, authorize("user", "admin"), deleteBook)
 
 router
   .route("/:id")

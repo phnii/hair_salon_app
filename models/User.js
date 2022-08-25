@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const Menu = require("./Menu");
+
 const UserSchema = new mongoose.Schema({
   name: {
     first: {
@@ -43,7 +45,7 @@ const UserSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
 });
 
 // Encrypt password using bcrypt
@@ -82,6 +84,19 @@ UserSchema.methods.getResetPasswordToken = function() {
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
+};
+
+
+UserSchema.methods.getMenus = async function() {
+  let allMenus = await Menu.find();
+  let result = [];
+  if (!allMenus) return [];
+  for (menu of allMenus) {
+    if (menu.staffs.includes(this._id)) {
+      result.push(menu);
+    }
+  }
+  return result;
 };
 
 UserSchema.virtual("books", {

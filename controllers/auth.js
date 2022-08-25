@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
+const Book = require("../models/Book");
 
 // @desc    ユーザー登録画面表示
 // @route   GET /auth/register
@@ -119,7 +120,12 @@ exports.getStaffs = async (req, res, next) => {
 // @access  Private/admin
 exports.getStaff = async (req, res, next) => {
   let staff = await User.findById(req.params.id).populate("menus");
+  let menus = await staff.getMenus();
+  let books = await Book.find({ staff: staff._id }).populate("user").populate("staff").populate("menu");
   res.locals.staff = staff;
+  res.locals.menus = menus;
+  res.locals.books = books;
+  res.locals.dateFormat = require("../dateFormat");
   res.render("auth/staff");
 };
 

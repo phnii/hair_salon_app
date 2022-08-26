@@ -1,0 +1,9 @@
+<h1>スタッフ選択画面</h1>
+
+予約状況を調べるスタッフを選択してください
+<br>
+<ul>
+<% for (staff of staffs) { %>
+  <li><a href="/books/admin/calendar?staff=<%= staff._id %>"><%= staff.name.last + staff.name.first %></a></li>
+<% } %>
+</ul>

@@ -1,0 +1,128 @@
+<h1>開始時間選択ページ</h1>
+<h5>本日から30日先までの予約状況(<%= staff.name %>)</h3>
+O : 予約なし <br>
+X : 予約済
+<div class="wrapper">
+  <div id="next-prev-button">
+    <button id="prev" onclick="prev()"><前の週</button>
+    <button id="next" onclick="next()">次の週></button>
+  </div>
+  <form action="/books/admin/create" method="POST">
+    <input type="hidden" name="staff" value="<%= query.staff %>">
+    <div id="calendar"></div>
+
+
+    調整用メニューを選択<br>
+    <div>
+      <table>
+        <tr><th>名前</th><th>コマ数</th><td>チェック</td></tr>
+        <% for (menu of adminMenus) { %>
+          <tr><td><%= menu.name %></td><td><%= menu.unitNum %></td><td><input type="radio" name="menu" value="<%= menu._id %>"></td></tr>
+        <% } %>
+      </table>
+    </div>
+    <input type="submit" type="send">
+  </form>
+</div>
+
+
+<div>
+</div>
+
+<script>
+let today = new Date()
+let showDate = today
+let frameNum = 20 // 一日10コマ
+let openTime = new Date(2000, 1, 1, 10, 30, 0) // 開店時間 10:30
+let booking = []
+let page = 0
+for (let i = 0; i < 30; i++) {
+  booking.push([])
+}
+booking[1].push([3,5]) // 8/22 12-13をXにする
+booking[4].push([0, 3])
+booking[15].push([0,0], [2,3])
+booking = JSON.parse("<%= JSON.stringify(books) %>")
+
+// 初期表示
+window.onload = function () {
+    showProcess(today);
+    updateProcess(booking);
+};
+// 前の週表示
+function prev(){
+  if (page == 0) return; // page-1以下は表示させない
+  openTime = new Date(2000, 1, 1, 10, 30, 0);
+  showDate.setDate(showDate.getDate() - 15);
+  page--;
+  showProcess(showDate);
+  updateProcess(booking);
+}
+
+// 次の週表示
+function next(){
+  if (page == 1) return; // page2以上は表示させない
+  openTime = new Date(2000, 1, 1, 10, 30, 0);
+  showDate.setDate(showDate.getDate() + 15);
+  page++;
+  showProcess(showDate);
+  updateProcess(booking);
+}
+
+// カレンダー表示
+function showProcess(showDate) {
+  let year = showDate.getFullYear()
+  let month = showDate.getMonth()
+  let date = showDate.getDate()
+  let days = []
+  for (let i = 0; i < 15; i++) {
+    let day = new Date(year, month, date + i)
+    days.push(day)
+  }
+  let calendar = createProcess(days)
+  document.querySelector('#calendar').innerHTML = calendar
+  updateProcess(booking)
+}
+
+// カレンダー作成
+function createProcess(days) {
+  let calendar = "<table id='table'><tr class='days_row'><th></th>";
+  let showTime = openTime
+  for (let i = 0; i < 15; i++) {
+    calendar += "<th>" + `${days[i].getMonth() + 1}` + "/" + days[i].getDate() + "</th>"
+  }
+  calendar += "</tr>"
+
+  for (let i = 0; i < frameNum; i++) {
+    calendar += "<tr>"
+    calendar += `<th>${showTime.getHours()}:${showTime.getMinutes()}</th>`
+    showTime.setMinutes(showTime.getMinutes() + 30);
+    for (let j = 0; j < 15; j++) {
+      calendar += `<td><input type="radio" name="day" value="${i}/${days[j]}""></td>`
+    }
+    calendar += "</tr>"
+  }
+  return calendar
+}
+
+function updateProcess(booking) {
+  let table = document.getElementById("table")
+  // table.rows[1].cells[2].innerText = "X"
+  // 予約済みのコマをXで塗り直す
+  // i日めのbooking[i][0]コマからbooking[i][1]コマをXにする
+  for (let i = 15 * page; i < 15 * (page + 1); i++) {
+    for (let j = 0; j < booking[i].length; j++) { // i日めの予約の件数だけループ
+      for (let t = booking[i][j][0]; t < booking[i][j][1]; t++) {
+        table.rows[t + 1].cells[(i + 1) - page * 15].innerText = "X"
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  th, td {
+    border: solid 1px;
+    text-align: center;
+  }
+</style>

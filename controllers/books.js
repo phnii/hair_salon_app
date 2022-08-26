@@ -67,33 +67,12 @@ exports.selectStaff = async (req, res, next) => {
 exports.calendar = async (req, res, next) => {
   let calSize = 30; // 今日から30日先まで予約可能
   let dayUnits = 20; // 1日20コマ営業
-  let staff = await User.findById(req.query.staff);
 
   let menu = await Menu.findById(req.query.menu);
-
-  let today = new Date();
   let reservingFrames = menu.unitNum; //今から予約しようとするコマ数
-  today.setHours(0);
-  today.setMinutes(0);
-  today.setSeconds(0);
-  let bookObjects = await Book.find({ day: { $gte: today }, staff: staff._id.toString()}).populate("menu");
-  let books = [];
-  for (let i = 0; i < calSize; i++) {
-    books.push([]);
-  }
-  for (let i = 0; i < bookObjects.length; i++) {
-    // books[bookObjects[i].day.getDate() - today.getDate()].push([bookObjects[i].frame, bookObjects[i].frame + bookObjects[i].num - 1])
-    let idx = parseInt((bookObjects[i].day - today) / 86400000) // 予約bookObjects[i]はテーブル上で何列(何日)目に入るか(今日の場合0)
-    // 予約不可のコマ区間の先頭のコマのインデックスをstartFrameと置く
-    // 予約済みのコマ区間の先頭より前のコマを(予約しようとするコマ数-1)だけXで塗りつぶす
-    let startFrame = bookObjects[i].start - reservingFrames + 1 >= 0 ? bookObjects[i].start - reservingFrames + 1: 0
-    books[idx].push([startFrame, bookObjects[i].start + bookObjects[i].menu.unitNum - 1])
-  }
-  // 全ての日付でテーブルの底から(予約するコマ数 - 1)分をXで塗りつぶす
-  for (let i = 0; i < calSize; i++) {
-    let el = [(dayUnits - 1) - reservingFrames + 2, (dayUnits - 1)];
-    books[i].push(el);
-  }
+
+  let books = await getCalendarData(req.query, reservingFrames, calSize, dayUnits);
+
   res.locals.query = req.query;
   res.locals.books = books;
   res.render("books/calendar");
@@ -153,3 +132,92 @@ exports.deleteBook = async (req, res, next) => {
   book = await Book.findByIdAndRemove(req.params.id);
   res.redirect("/auth/me");
 };
+
+// @desc    予約するスタッフ選択画面表示
+// @route   GET /books/admin/staffs
+// @access  Private/admin
+exports.adminStaffs = async (req, res, next) => {
+  let staffs = await User.find({ role: "staff" });
+  res.locals.staffs = staffs;
+
+  res.render("books/adminStaffs");
+};
+
+// @desc    予約済カレンダー表示
+// @route   GET /books/admin/calendar
+// @access  Private/admin
+exports.adminCalendar = async (req, res, next) => {
+  let calSize = 30; // 今日から30日先まで表示
+  let dayUnits = 20; // 1日20コマ営業
+  let books = await getCalendarData(req.query, 0, calSize, dayUnits);
+
+  // 業務用メニューを渡す
+  let adminMenus = await Menu.find({ adminOnly: true });
+
+  res.locals.query = req.query;
+  res.locals.books = books;
+  res.locals.adminMenus = adminMenus;
+  res.render("books/adminCalendar");
+};
+
+// @desc    業務用予約作成
+// @route   POST /books/admin/create
+// @access  Private/admin
+exports.adminCreate = async (req, res, next) => {
+  let day = req.body.day.split("/")[1];
+  day = new Date(day);
+  console.log(`${day}`.red)
+  let newBook = await Book.create({
+    user: req.user._id,
+    staff: req.body.staff,
+    menu: req.body.menu,
+    start: req.body.day.split("/")[0],
+    day: new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)
+  });
+
+  if (!newBook) {
+    res.send("失敗しました");
+  }
+  return res.send("ya")
+  res.redirect(`/books/admin/calendar?staff=${req.query.staff}`);
+};
+
+
+// ユーザーが選択したスタッフとメニューを受け取って予約不可能な日時データを返す
+// books = [E0, E1, ..., E29]
+// Ei = [e0, .., en] i日目の予約不可な区間な個数だけ要素を持つ
+// ei = [start, end] 予約不可な区間の始まりのコマ位置と終わりのコマ位置 
+const getCalendarData = async (query, reservingFrames, calSize, dayUnits) => {
+  let staff = await User.findById(query.staff);
+
+  let today = new Date();
+  today.setHours(0);
+  today.setMinutes(0);
+  today.setSeconds(0);
+
+  let bookObjects = await Book.find({ day: { $gte: today }, staff: staff._id.toString()}).populate("menu");
+  let books = [];
+  for (let i = 0; i < calSize; i++) {
+    books.push([]);
+  }
+  for (let i = 0; i < bookObjects.length; i++) {
+    let day = parseInt((bookObjects[i].day - today) / 86400000) // 予約bookObjects[i]はテーブル上で何列(何日)目に入るか(今日の場合0)
+    // 予約不可のコマ区間の先頭のコマのインデックスをstartFrameと置く
+    // 予約済みのコマ区間の先頭より前のコマを(予約しようとするコマ数-1)だけXで塗りつぶす
+    let startFrame;
+    if (reservingFrames > 0) {
+      startFrame = bookObjects[i].start - (reservingFrames - 1) >= 0 ? bookObjects[i].start - (reservingFrames - 1) : 0
+    } else {
+      startFrame = bookObjects[i].start;
+    }
+    books[day].push([startFrame, startFrame + bookObjects[i].menu.unitNum ])
+  }
+  // 全ての日付でテーブルの底から(予約するコマ数 - 1)分をXで塗りつぶす
+  if (reservingFrames > 0) {
+    for (let i = 0; i < calSize; i++) {
+      let el = [(dayUnits - 1) - reservingFrames + 2, (dayUnits - 1)];
+      books[i].push(el);
+    }
+  }
+  return books;
+}

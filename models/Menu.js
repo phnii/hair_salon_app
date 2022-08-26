@@ -25,6 +25,10 @@ const  MenuSchema = new mongoose.Schema({
     ref: "User",
     required: true
   }],
+  adminOnly: {
+    type: Boolean,
+    default: false
+  }
 });
 
 module.exports = mongoose.model("Menu", MenuSchema);

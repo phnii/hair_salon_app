@@ -6,7 +6,10 @@ const { indexBooks,
         calendar,
         confirmation,
         createBook,
-        deleteBook
+        deleteBook,
+        adminCalendar,
+        adminStaffs,
+        adminCreate
        } = require("../controllers/books");
 
 
@@ -38,6 +41,18 @@ router
 router
   .route("/delete/:id")
   .get(protect, authorize("user", "admin"), deleteBook)
+
+router
+  .route("/admin/calendar")
+  .get(protect, authorize("admin"), adminCalendar);
+
+router
+  .route("/admin/staffs")
+  .get(protect, authorize("admin"), adminStaffs);
+
+router
+  .route("/admin/create")
+  .post(protect, authorize("admin"), adminCreate);
 
 router
   .route("/:id")

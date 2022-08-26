@@ -5,7 +5,12 @@ const Menu = require("../models/Menu");
 // @route   GET /menus
 // @access  Public
 exports.indexMenu = async (req, res, next) => {
-  res.locals.menus = await Menu.find().populate({path: "staffs"});
+  // 管理者以外には管理者用でないメニューのみ表示させる
+  if (res.locals.currentUser && res.locals.currentUser.role === "admin") {
+    res.locals.menus = await Menu.find().populate({ path: "staffs" });
+  } else {
+    res.locals.menus = await Menu.find({ adminOnly: false }).populate({ path: "staffs" });
+  }
   res.render("menus/index");
 };
 
@@ -13,7 +18,11 @@ exports.indexMenu = async (req, res, next) => {
 // @route   GET /menus/:id
 // @access  Public
 exports.showMenu = async (req, res, next) => {
-  res.locals.menu = await Menu.findById(req.params.id).populate({path: "staffs"});
+  let menu = await Menu.findById(req.params.id).populate({path: "staffs"});
+  if (menu.adminOnly && (!res.locals.currentUser || res.locals.currentUser.role !== "admin")) {
+    res.send("不正なアクセス");
+  }
+  res.locals.menu = menu;
   res.render("menus/show");
 };
 
@@ -32,7 +41,7 @@ exports.newMenu = async (req, res, next) => {
 exports.createMenu = async (req, res, next) => {
   try {
     let menu = await Menu.create(req.body);
-    res.redirect("/menus/new");
+    res.redirect(`/menus/${menu._id}`);
   } catch (err) {
     res.locals.err = err;
     res.locals.staffs = await User.find({ role: "staff" });

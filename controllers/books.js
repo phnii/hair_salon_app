@@ -26,8 +26,8 @@ exports.showBook = async (req, res, next) => {
   console.log(`${req.user._id}`.blue.bold)
   console.log(`${req.user.role}`.red.bold)
 
-  if (book.user._id.toString() !== req.user._id.toString() || req.user.role.toString() !== "admin") {
-    return res.redirect("/books/menus");
+  if (book.user._id.toString() !== req.user._id.toString() && req.user.role.toString() !== "admin") {
+    return res.send("不正なアクセス")
   }
   res.locals.book = book;
   res.locals.dateFormat = dateFormat;

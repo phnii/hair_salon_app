@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
   const { name, email, password, role, phone } = req.body;
 
   // roleがstaffにならないようにする
-  if (role !== "user") {
+  if (role !== undefined && role !== "user") {
     res.send("不正なアクセス");
   }
   // Create user

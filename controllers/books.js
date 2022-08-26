@@ -139,7 +139,7 @@ exports.deleteBook = async (req, res, next) => {
 
   // book.userかadmin以外はキャンセルできない
   if (book.user._id.toString() !== req.user._id.toString()
-    || req.user.role.toString() !== "admin") {
+  && req.user.role.toString() !== "admin") {
     return res.send("不正なアクセス");
   }
   console.log(`today:${today}`.blue)
